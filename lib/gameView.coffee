@@ -18,10 +18,10 @@ class GameView
 
 	bindMoves: ->
 		self = this
-		Mousetrap.bind("w", -> self.makeMove("N"))
-		Mousetrap.bind("d", -> self.makeMove("E"))
-		Mousetrap.bind("s", -> self.makeMove("S"))
-		Mousetrap.bind("a", -> self.makeMove("W"))
+		Mousetrap.bind(["w","up"], -> self.makeMove("N"))
+		Mousetrap.bind(["d","right"], -> self.makeMove("E"))
+		Mousetrap.bind(["s","down"], -> self.makeMove("S"))
+		Mousetrap.bind(["a","left"], -> self.makeMove("W"))
 
 	clearBoard: ->
 		$("li").each (idx, li) ->
