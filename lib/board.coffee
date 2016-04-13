@@ -4,7 +4,8 @@ class Board
 		@grid = @makeGrid()
 		@tiles = []
 		@lastMoveDir = null
-	
+		@addTile [3,2], 3
+		@addTile [2,2], 4
 	makeGrid: ->
 		grid = []
 		for row in [0..3]
@@ -28,7 +29,7 @@ class Board
 	isEmptyPosition: (pos) ->
 		@atPosition(pos) == null
 
-	addTile: ->
-		@tiles << new Tile()
+	addTile: (pos, val) ->
+		@tiles.push(new Tile(pos, val))
 
 module.exports = Board

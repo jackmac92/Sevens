@@ -6,3 +6,4 @@ $ ->
 	gameRoot = $ "#sevens"
 	game = new Game()
 	new GameView(game, gameRoot)
+	window.game = game

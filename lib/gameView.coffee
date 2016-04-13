@@ -3,27 +3,39 @@ class GameView
 		@game = game
 		@gameEl = gameRoot
 		@setupBoard()
+		@bindMoves()
+		@renderBoard()
+
 	setupBoard: ->
 		$ul = $ '<ul>'
 		$ul.addClass "group"
 		for row in [0..3]
 			for col in [0..3]
 				$li = $ "<li>"
-				$li.data "pos", [row,col]
+				$li.data("pos", [row,col])
 				$ul.append $li
 		@gameEl.append($ul)
-	moves:
-		"w": "N"
-		"d": "E"
-		"a": "W"
-		"s": "S"
-
 
 	bindMoves: ->
-		for key, dir of @moves
-			Mousetrap.bind key, @makeMove(dir)
+		self = this
+		Mousetrap.bind("w", -> self.makeMove("N"))
+		Mousetrap.bind("d", -> self.makeMove("E"))
+		Mousetrap.bind("s", -> self.makeMove("S"))
+		Mousetrap.bind("a", -> self.makeMove("W"))
+
+	clearBoard: ->
+		$("li").each (idx, li) ->
+			li.dataset.tileValue = ""
+
+	renderBoard: ->
+		@clearBoard()
+		tileData = @game.dataForRender()
+		$("li").each (idx, li) ->
+			if tileData[idx.toString()]
+				li.dataset.tileValue = tileData[idx]
 
 	makeMove: (dir) ->
 		@game.makeMove(dir)
+		@renderBoard()
 
 module.exports = GameView

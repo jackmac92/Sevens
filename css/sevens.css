@@ -33,6 +33,11 @@ ul {
   border: 5px solid black;
 }
 
+li:before {
+  content: attr(data-tile-value);
+  background: yellow;
+}
+
 li {
   float: left;
   width: 90px;
