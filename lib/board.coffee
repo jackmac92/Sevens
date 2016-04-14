@@ -19,8 +19,29 @@ class Board
 				grid[row].push(null)
 		grid
 
-	makeMove: (delta) ->
-		for tile in @tiles()
+	deltas:
+		"N":[0,-1]
+		"E":[1, 0]
+		"W":[-1, 0]
+		"S":[0, 1]
+
+	deltaTilePattern: (dir) ->
+		switch dir
+			when "N"
+				@tilesByRow()
+			when "E"
+				@tilesByColumn().reverse()
+			when "W"
+				@tilesByColumn()
+			when "S"
+				@tilesByRow().reverse()
+
+
+	makeMove: (dir) ->
+		delta = @deltas[dir]
+		movingTiles = @deltaTilePattern dir
+		for tile in movingTiles
+			# `debugger`
 			currPos = tile.pos
 			newPos = [currPos[0] + delta[0], currPos[1] + delta[1]]	
 			if @spotAvailable newPos
@@ -39,6 +60,28 @@ class Board
 
 	tileAt: (pos) ->
 		@grid[pos[1]][pos[0]]
+
+	tilesByRow: ->
+		rowTiles = {}
+		for tile in @tiles()
+			rowTiles[tile.pos[1]] = rowTiles[tile.pos[1]] || []
+			rowTiles[tile.pos[1]].push(tile)
+		currTiles = []
+		for row, tilegroup of rowTiles
+			for tile in tilegroup
+				currTiles.push tile
+		currTiles
+
+	tilesByColumn: ->
+		columnTiles = {}
+		for tile in @tiles()
+			columnTiles[tile.pos[0]] = columnTiles[tile.pos[0]] || []
+			columnTiles[tile.pos[0]].push(tile)
+		currTiles = []
+		for column, tilegroup of columnTiles
+			for tile in tilegroup
+				currTiles.push tile
+		currTiles
 
 	isEmptyPosition: (pos) ->
 		@tileAt(pos) == null
