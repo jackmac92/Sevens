@@ -1,3 +1,4 @@
+Mousetrap = require 'mousetrap'
 class GameView
 	constructor: (game, gameRoot) ->
 		@game = game
