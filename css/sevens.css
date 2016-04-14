@@ -26,8 +26,8 @@ ul {
 
 li:before {
   content: attr(data-tile-value);
-  background: red;
   font-size: 36px; 
+  line-height: 2.333;
 }
 
 li {
@@ -36,6 +36,7 @@ li {
   height: 90px;
   border: 5px solid black;
   background: gray;
+  text-align: center;
 }
 
 .tile {

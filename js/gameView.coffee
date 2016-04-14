@@ -41,7 +41,7 @@ class GameView
 		if @movable
 			@movable = false
 			self = this
-			setTimeout (-> self.movable = true), 200
+			setTimeout (-> self.movable = true), 50
 			@game.makeMove(dir)
 			@renderBoard()
 		else

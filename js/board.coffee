@@ -1,7 +1,7 @@
 Tile = require './tile.coffee'
 class Board
 	constructor: ->
-		@grid = @makeGrid()
+		@grid = @setupGrid()
 		@tilesStore = {}
 		@lastMoveDir = null
 		@addTile([3,2], 3)
@@ -10,25 +10,14 @@ class Board
 		for id, tile of @tilesStore
 			tile
 
-	makeGrid: ->
-		grid = []
-		for row in [0..3]
-			grid.push([])
-			for col in [0..3]
-				grid[row].push(null)
-		grid
-
-	deltas:
-		"N":[0,-1]
-		"E":[1, 0]
-		"W":[-1, 0]
-		"S":[0, 1]
-
-	entryPositions:
-		"N":["*",3]
-		"E":[0,"*"]
-		"W":[3,"*"]
-		"S":["*",0]
+	surroundingTiles: (pos) ->
+		deltas = [[0,1],[0,-1],[1,0],[-1,0]]
+		result = []
+		for d in deltas
+			newPos = [pos[0]+d[0], pos[1]+d[1]]
+			if @isValidPosition(newPos) && @tileAt(newPos)
+				result.push @tileAt(newPos)
+		result
 
 	deltaTilePattern: (dir) ->
 		switch dir
@@ -106,10 +95,7 @@ class Board
 	replaceTilePos: ->
 		rand = Math.floor Math.random() * 100
 		[x, y] = @entryPositions[@lastMoveDir]
-		if x == "*"
-			x = rand % 4
-		else
-			y = rand % 4
+		if x == "*" then x = rand % 4 else y = rand % 4
 		pos = [x,y]
 
 	replaceTile: ->
@@ -121,12 +107,30 @@ class Board
 		pos = [20,20]
 		while !@spotAvailable pos
 			pos = @replaceTilePos()
-			console.log pos
 		@addTile(pos, val)
 
 	addTile: (pos, val) ->
 		newTile = new Tile(pos, val)
 		@grid[pos[1]][pos[0]] = newTile
 		@tilesStore[newTile.id] = newTile
+	setupGrid: ->
+		grid = []
+		for row in [0..3]
+			grid.push([])
+			for col in [0..3]
+				grid[row].push(null)
+		grid
+
+	deltas:
+		"N":[0,-1]
+		"E":[1, 0]
+		"W":[-1, 0]
+		"S":[0, 1]
+
+	entryPositions:
+		"N":["*",3]
+		"E":[0,"*"]
+		"W":[3,"*"]
+		"S":["*",0]
 
 module.exports = Board
