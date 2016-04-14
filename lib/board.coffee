@@ -4,9 +4,8 @@ class Board
 		@grid = @makeGrid()
 		@tilesStore = {}
 		@lastMoveDir = null
-		@addTile [3,2], 3
-		@addTile [2,3], 4
-		window.grid = @grid
+		@addTile([3,2], 3)
+		@addTile([2,2], 4)
 	tiles: ->
 		for id, tile of @tilesStore
 			tile
@@ -25,6 +24,12 @@ class Board
 		"W":[-1, 0]
 		"S":[0, 1]
 
+	entryPositions:
+		"N":[3,"*"]
+		"E":["*", 0]
+		"W":["*", 3]
+		"S":[0,"*"]
+
 	deltaTilePattern: (dir) ->
 		switch dir
 			when "N"
@@ -38,19 +43,20 @@ class Board
 
 
 	makeMove: (dir) ->
+		@lastMoveDir = dir
 		delta = @deltas[dir]
 		movingTiles = @deltaTilePattern dir
 		for tile in movingTiles
-			# `debugger`
 			currPos = tile.pos
 			newPos = [currPos[0] + delta[0], currPos[1] + delta[1]]	
 			if @spotAvailable newPos
 				@moveTileTo(tile, newPos)
 			else if @isValidPosition newPos
-				if tile.canMergeWith @tileAt(newPos)
-					console.log "mergeable"
-			else
-				console.log tile.value + " at edge"
+				destTile = @tileAt(newPos)
+				console.log destTile
+				if tile.canMergeWith destTile.value 
+					@mergeTiles tile, destTile
+		@replaceTile()
 
 	spotAvailable: (pos) ->
 		@isValidPosition(pos) && @isEmptyPosition(pos)
@@ -60,6 +66,9 @@ class Board
 
 	tileAt: (pos) ->
 		@grid[pos[1]][pos[0]]
+
+	setTileAt: (pos, val) ->
+		@grid[pos[1]][pos[0]] = val
 
 	tilesByRow: ->
 		rowTiles = {}
@@ -85,14 +94,29 @@ class Board
 
 	isEmptyPosition: (pos) ->
 		@tileAt(pos) == null
+
 	moveTileTo: (tile, dest) ->
-		@grid[tile.pos[1]][tile.pos[0]] = null
-		@grid[dest[1]][dest[0]] = tile
+		@setTileAt(tile.pos, null)
+		@setTileAt(dest, tile)
 		tile.moveTo(dest)
 
 	mergeTiles: (sourceTile, receivingTile) ->
-		@grid[tile.pos[1]][tile.pos[0]] = null
-		
+		@grid[sourceTile.pos[1]][sourceTile.pos[0]] = null
+		receivingTile.value += sourceTile.value
+		delete @tilesStore[sourceTile.id]
+	
+	replaceTile: ->
+		rand = Math.random() * 100
+		if rand < 47
+			val = 3
+		else if rand < 94
+			val = 4
+		else
+			val = rand - (rand % 7)
+		pos = @entryPositions[@lastMoveDir]
+		pos[pos.indexOf("*")] = rand % 4
+		@addTile(pos, val)
+
 	addTile: (pos, val) ->
 		newTile = new Tile(pos, val)
 		@grid[pos[1]][pos[0]] = newTile
