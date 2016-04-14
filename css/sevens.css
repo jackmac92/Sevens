@@ -16,16 +16,7 @@ ul {
   display: block;
 }
 
-body {
-  font-family: sans-serif;
-  text-align: center;
-  font-weight: bold;
-}
 
-h1 {
-  font-size: 60px;
-  margin: 30px;
-}
 
 ul {
   margin: 30px auto;
@@ -35,7 +26,8 @@ ul {
 
 li:before {
   content: attr(data-tile-value);
-  background: yellow;
+  background: red;
+  font-size: 36px; 
 }
 
 li {
@@ -44,9 +36,18 @@ li {
   height: 90px;
   border: 5px solid black;
   background: gray;
-  cursor: pointer;
 }
 
 .tile {
   background: blue;
+}
+
+._7 {
+  background: orange;
+}
+._3 {
+  background: rebeccapurple;
+}
+._4 {
+  background: lime;
 }

@@ -5,6 +5,7 @@ class GameView
 		@setupBoard()
 		@bindMoves()
 		@renderBoard()
+		@movable = true
 
 	setupBoard: ->
 		$ul = $ '<ul>'
@@ -26,6 +27,7 @@ class GameView
 	clearBoard: ->
 		$("li").each (idx, li) ->
 			li.dataset.tileValue = ""
+			li.className = ""
 
 	renderBoard: ->
 		@clearBoard()
@@ -33,9 +35,16 @@ class GameView
 		$("li").each (idx, li) ->
 			if tileData[idx.toString()]
 				li.dataset.tileValue = tileData[idx]
+				li.className = "tile _" + tileData[idx]
 
 	makeMove: (dir) ->
-		@game.makeMove(dir)
-		@renderBoard()
+		if @movable
+			@movable = false
+			self = this
+			setTimeout (-> self.movable = true), 200
+			@game.makeMove(dir)
+			@renderBoard()
+		else
+			console.log 'hang on'
 
 module.exports = GameView

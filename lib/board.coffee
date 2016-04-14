@@ -25,10 +25,10 @@ class Board
 		"S":[0, 1]
 
 	entryPositions:
-		"N":[3,"*"]
-		"E":["*", 0]
-		"W":["*", 3]
-		"S":[0,"*"]
+		"N":["*",3]
+		"E":[0,"*"]
+		"W":[3,"*"]
+		"S":["*",0]
 
 	deltaTilePattern: (dir) ->
 		switch dir
@@ -41,7 +41,6 @@ class Board
 			when "S"
 				@tilesByRow().reverse()
 
-
 	makeMove: (dir) ->
 		@lastMoveDir = dir
 		delta = @deltas[dir]
@@ -53,7 +52,6 @@ class Board
 				@moveTileTo(tile, newPos)
 			else if @isValidPosition newPos
 				destTile = @tileAt(newPos)
-				console.log destTile
 				if tile.canMergeWith destTile.value 
 					@mergeTiles tile, destTile
 		@replaceTile()
@@ -105,16 +103,25 @@ class Board
 		receivingTile.value += sourceTile.value
 		delete @tilesStore[sourceTile.id]
 	
-	replaceTile: ->
-		rand = Math.random() * 100
-		if rand < 47
-			val = 3
-		else if rand < 94
-			val = 4
+	replaceTilePos: ->
+		rand = Math.floor Math.random() * 100
+		[x, y] = @entryPositions[@lastMoveDir]
+		if x == "*"
+			x = rand % 4
 		else
-			val = rand - (rand % 7)
-		pos = @entryPositions[@lastMoveDir]
-		pos[pos.indexOf("*")] = rand % 4
+			y = rand % 4
+		pos = [x,y]
+
+	replaceTile: ->
+		rand = Math.floor Math.random() * 100
+		if rand < 51
+			val = 3
+		else
+			val = 4
+		pos = [20,20]
+		while !@spotAvailable pos
+			pos = @replaceTilePos()
+			console.log pos
 		@addTile(pos, val)
 
 	addTile: (pos, val) ->
@@ -123,5 +130,3 @@ class Board
 		@tilesStore[newTile.id] = newTile
 
 module.exports = Board
-
-# @tilesByRow

@@ -13,7 +13,11 @@ class Tile
 		@x = pos[0]
 		@y = pos[1]
 	canMergeWith: (val) ->
-		val == @value || val+@value == 7
+		if val < 5
+			val+@value == 7
+		else
+			val == @value
+			
 
 	renderIdx: ->
 		@pos[1]*4 + @pos[0]
