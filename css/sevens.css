@@ -16,17 +16,21 @@ ul {
   display: block;
 }
 
+body {
+  background: #040626;
+}
 
 
 ul {
-  margin: 30px auto;
+  margin: 50px auto;
   width: 400px;
-  border: 5px solid black;
+  border: 5px solid gray;
 }
 
 li:before {
   content: attr(data-tile-value);
   font-size: 36px; 
+  color: white;
   line-height: 2.333;
 }
 
@@ -34,21 +38,18 @@ li {
   float: left;
   width: 90px;
   height: 90px;
-  border: 5px solid black;
-  background: gray;
+  border: 5px solid gray;
+  background: #040626;
   text-align: center;
 }
 
 .tile {
-  background: blue;
+  background: #21A576;
 }
 
-._7 {
-  background: orange;
-}
 ._3 {
-  background: rebeccapurple;
+  background: #F6D531;
 }
 ._4 {
-  background: lime;
+  background: #4E15E2;
 }
