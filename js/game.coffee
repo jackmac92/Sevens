@@ -4,6 +4,8 @@ class Game
 		@board = new Board()
 		@tiles = -> @board.tiles()
 
+	
+
 	makeMove: (dir) ->
 		unless @gameFinished()
 			@board.makeMove dir
