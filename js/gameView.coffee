@@ -1,4 +1,5 @@
 Mousetrap = require 'mousetrap'
+
 class GameView
 	constructor: (game, gameRoot) ->
 		@game = game
@@ -19,6 +20,24 @@ class GameView
 		@gameEl.append($ul)
 
 	bindMoves: ->
+		@bindKeys()
+		@bindSwipes()
+
+	bindSwipes: ->
+		self = this
+		$("#sevens").swipe
+			swipeLeft: (event,direction,distance,duration, fingerCount) ->
+				self.makeMove("W")
+			swipeRight: (event,direction,distance,duration, fingerCount) ->
+				self.makeMove("E")
+			swipeUp: (event,direction,distance,duration, fingerCount) ->
+				self.makeMove("N")
+			swipeDown: (event,direction,distance,duration, fingerCount) ->
+				self.makeMove("S")
+			triggerOnTouchEnd = false
+			threshold: 200  
+
+	bindKeys: ->
 		self = this
 		Mousetrap.bind(["w","up"], -> self.makeMove("N"))
 		Mousetrap.bind(["d","right"], -> self.makeMove("E"))
