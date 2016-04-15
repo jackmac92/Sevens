@@ -6,6 +6,11 @@ html, body, figure, figcaption, ul, li, h1 {
   text-align: inherit;
 }
 
+#sevens {
+  margin: 30px 0;
+  width: 100%;
+}
+
 ul {
   list-style: none;
 }
@@ -22,7 +27,7 @@ body {
 
 
 ul {
-  margin: 50px auto;
+  margin: auto;
   width: 400px;
   border: 5px solid gray;
 }
@@ -30,17 +35,33 @@ ul {
 li:before {
   content: attr(data-tile-value);
   font-size: 36px; 
+  text-shadow: -1px 0 gray, 0 1px gray, 1px 0 gray, 0 -1px gray;
   color: white;
   line-height: 2.333;
 }
 
 li {
+  box-sizing: border-box;
   float: left;
-  width: 90px;
-  height: 90px;
+  width: 100px;
+  height: 100px;
   border: 5px solid gray;
   background: #040626;
   text-align: center;
+}
+
+h1 {
+  margin: 5px;
+  text-align: center;
+  font-size: 40px;
+  color: green;
+}
+h3 {
+  color: white;
+}
+
+p {
+  color: white;
 }
 
 .tile {
@@ -52,4 +73,10 @@ li {
 }
 ._4 {
   background: #4E15E2;
+}
+
+@media only screen and (min-width: 410px) {
+}
+
+@media only screen and (max-width: 410px) {
 }
