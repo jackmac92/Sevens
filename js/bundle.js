@@ -418,6 +418,32 @@
 	  };
 	
 	  GameView.prototype.bindMoves = function() {
+	    this.bindKeys();
+	    return this.bindSwipes();
+	  };
+	
+	  GameView.prototype.bindSwipes = function() {
+	    var self, triggerOnTouchEnd;
+	    self = this;
+	    return $("#sevens").swipe({
+	      swipeLeft: function(event, direction, distance, duration, fingerCount) {
+	        return self.makeMove("W");
+	      },
+	      swipeRight: function(event, direction, distance, duration, fingerCount) {
+	        return self.makeMove("E");
+	      },
+	      swipeUp: function(event, direction, distance, duration, fingerCount) {
+	        return self.makeMove("N");
+	      },
+	      swipeDown: function(event, direction, distance, duration, fingerCount) {
+	        return self.makeMove("S");
+	      }
+	    }, triggerOnTouchEnd = false, {
+	      threshold: 200
+	    });
+	  };
+	
+	  GameView.prototype.bindKeys = function() {
 	    var self;
 	    self = this;
 	    Mousetrap.bind(["w", "up"], function() {
