@@ -79,7 +79,7 @@
 	    if (!this.gameFinished()) {
 	      return this.board.makeMove(dir);
 	    } else {
-	      return console.log("Game Over");
+	      return $('#modal1').openModal();
 	    }
 	  };
 	

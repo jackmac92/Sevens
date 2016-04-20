@@ -10,7 +10,7 @@ class Game
 		unless @gameFinished()
 			@board.makeMove dir
 		else
-			console.log "Game Over"
+			$('#modal1').openModal()
 
 	gameFinished: ->
 		for row in @board.grid
