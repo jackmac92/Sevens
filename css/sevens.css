@@ -28,7 +28,7 @@ body {
 
 ul {
   margin: auto;
-  width: 400px;
+  width: 410px;
   border: 5px solid gray;
 }
 
@@ -48,6 +48,7 @@ li {
   border: 5px solid gray;
   background: #040626;
   text-align: center;
+  font-family: 'Catamaran', sans-serif;
 }
 
 h1 {
@@ -55,13 +56,16 @@ h1 {
   text-align: center;
   font-size: 40px;
   color: green;
+  font-family: 'Catamaran', sans-serif;
 }
 h3 {
   color: white;
+  font-family: 'Catamaran', sans-serif;
 }
 
 p {
   color: white;
+  font-family: 'Catamaran', sans-serif;
 }
 
 .tile {
