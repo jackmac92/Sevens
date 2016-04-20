@@ -1,6 +1,9 @@
 # Sevens
 [Play now]
 
+![alt text](./screenshot.png "Game Screenshot")
+
+
 ### How it was made
   - Display is DOM based
   - Used Materialize CSS for Game Over Modal
