@@ -3,9 +3,10 @@ class Board
 	constructor: ->
 		@grid = @setupGrid()
 		@tilesStore = {}
-		@lastMoveDir = null
-		@addTile([3,2], 3)
-		@addTile([2,2], 4)
+		dirs = ["N","E","W","S"]
+		@lastMoveDir = dirs[Math.floor(Math.random() * dirs.length)];
+		@replaceTile()
+		@replaceTile()
 	tiles: ->
 		for id, tile of @tilesStore
 			tile
@@ -95,7 +96,11 @@ class Board
 	replaceTilePos: ->
 		rand = Math.floor Math.random() * 100
 		[x, y] = @entryPositions[@lastMoveDir]
-		if x == "*" then x = rand % 4 else y = rand % 4
+		if x == "*"
+			x = rand % 4 
+		else 
+			y = rand % 4
+
 		pos = [x,y]
 
 	replaceTile: ->
@@ -104,7 +109,7 @@ class Board
 			val = 3
 		else
 			val = 4
-		pos = [20,20]
+		pos = [100,100]
 		while !@spotAvailable pos
 			pos = @replaceTilePos()
 		@addTile(pos, val)

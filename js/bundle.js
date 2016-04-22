@@ -78,8 +78,6 @@
 	  Game.prototype.makeMove = function(dir) {
 	    if (!this.gameFinished()) {
 	      return this.board.makeMove(dir);
-	    } else {
-	      return $('#modal1').openModal();
 	    }
 	  };
 	
@@ -135,11 +133,13 @@
 	
 	Board = (function() {
 	  function Board() {
+	    var dirs;
 	    this.grid = this.setupGrid();
 	    this.tilesStore = {};
-	    this.lastMoveDir = null;
-	    this.addTile([3, 2], 3);
-	    this.addTile([2, 2], 4);
+	    dirs = ["N", "E", "W", "S"];
+	    this.lastMoveDir = dirs[Math.floor(Math.random() * dirs.length)];
+	    this.replaceTile();
+	    this.replaceTile();
 	  }
 	
 	  Board.prototype.tiles = function() {
@@ -293,7 +293,7 @@
 	    } else {
 	      val = 4;
 	    }
-	    pos = [20, 20];
+	    pos = [100, 100];
 	    while (!this.spotAvailable(pos)) {
 	      pos = this.replaceTilePos();
 	    }
@@ -488,9 +488,10 @@
 	        return self.movable = true;
 	      }), 50);
 	      this.game.makeMove(dir);
-	      return this.renderBoard();
-	    } else {
-	      return console.log('hang on');
+	      this.renderBoard();
+	      if (this.game.gameFinished()) {
+	        return $('#modal1').openModal();
+	      }
 	    }
 	  };
 	

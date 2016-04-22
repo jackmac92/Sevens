@@ -9,8 +9,6 @@ class Game
 	makeMove: (dir) ->
 		unless @gameFinished()
 			@board.makeMove dir
-		else
-			$('#modal1').openModal()
 
 	gameFinished: ->
 		for row in @board.grid

@@ -64,7 +64,8 @@ class GameView
 			setTimeout (-> self.movable = true), 50
 			@game.makeMove(dir)
 			@renderBoard()
-		else
-			console.log 'hang on'
+			if @game.gameFinished()
+				$('#modal1').openModal()
+
 
 module.exports = GameView
