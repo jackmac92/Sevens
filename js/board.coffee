@@ -92,16 +92,20 @@ class Board
 		@grid[sourceTile.pos[1]][sourceTile.pos[0]] = null
 		receivingTile.value += sourceTile.value
 		delete @tilesStore[sourceTile.id]
-	
+		
 	replaceTilePos: ->
-		rand = Math.floor Math.random() * 100
 		[x, y] = @entryPositions[@lastMoveDir]
+		options = []
 		if x == "*"
-			x = rand % 4 
-		else 
-			y = rand % 4
-
-		pos = [x,y]
+			for i in [0..3]
+				if @spotAvailable [i, y]
+					options.push [i,y]
+		else
+			for i in [0..3]
+				if @spotAvailable [x, i]
+					options.push [x,i]
+		
+		options[Math.floor(Math.random() * options.length)]
 
 	replaceTile: ->
 		rand = Math.floor Math.random() * 100
@@ -109,15 +113,14 @@ class Board
 			val = 3
 		else
 			val = 4
-		pos = [100,100]
-		while !@spotAvailable pos
-			pos = @replaceTilePos()
+		pos = @replaceTilePos()			
 		@addTile(pos, val)
 
 	addTile: (pos, val) ->
 		newTile = new Tile(pos, val)
 		@grid[pos[1]][pos[0]] = newTile
 		@tilesStore[newTile.id] = newTile
+
 	setupGrid: ->
 		grid = []
 		for row in [0..3]

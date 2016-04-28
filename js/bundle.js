@@ -171,11 +171,11 @@
 	  };
 	
 	  Board.prototype.surroundingTiles = function(pos) {
-	    var d, deltas, i, len, newPos, result;
+	    var d, deltas, j, len, newPos, result;
 	    deltas = [[0, 1], [0, -1], [1, 0], [-1, 0]];
 	    result = [];
-	    for (i = 0, len = deltas.length; i < len; i++) {
-	      d = deltas[i];
+	    for (j = 0, len = deltas.length; j < len; j++) {
+	      d = deltas[j];
 	      newPos = [pos[0] + d[0], pos[1] + d[1]];
 	      if (this.isValidPosition(newPos) && this.tileAt(newPos)) {
 	        result.push(this.tileAt(newPos));
@@ -198,12 +198,12 @@
 	  };
 	
 	  Board.prototype.makeMove = function(dir) {
-	    var currPos, delta, destTile, i, len, movingTiles, newPos, tile;
+	    var currPos, delta, destTile, j, len, movingTiles, newPos, tile;
 	    this.lastMoveDir = dir;
 	    delta = this.deltas[dir];
 	    movingTiles = this.deltaTilePattern(dir);
-	    for (i = 0, len = movingTiles.length; i < len; i++) {
-	      tile = movingTiles[i];
+	    for (j = 0, len = movingTiles.length; j < len; j++) {
+	      tile = movingTiles[j];
 	      currPos = tile.pos;
 	      newPos = [currPos[0] + delta[0], currPos[1] + delta[1]];
 	      if (this.spotAvailable(newPos)) {
@@ -235,19 +235,19 @@
 	  };
 	
 	  Board.prototype.tilesByRow = function() {
-	    var currTiles, i, j, len, len1, ref, row, rowTiles, tile, tilegroup;
+	    var currTiles, j, k, len, len1, ref, row, rowTiles, tile, tilegroup;
 	    rowTiles = {};
 	    ref = this.tiles();
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      tile = ref[i];
+	    for (j = 0, len = ref.length; j < len; j++) {
+	      tile = ref[j];
 	      rowTiles[tile.pos[1]] = rowTiles[tile.pos[1]] || [];
 	      rowTiles[tile.pos[1]].push(tile);
 	    }
 	    currTiles = [];
 	    for (row in rowTiles) {
 	      tilegroup = rowTiles[row];
-	      for (j = 0, len1 = tilegroup.length; j < len1; j++) {
-	        tile = tilegroup[j];
+	      for (k = 0, len1 = tilegroup.length; k < len1; k++) {
+	        tile = tilegroup[k];
 	        currTiles.push(tile);
 	      }
 	    }
@@ -255,19 +255,19 @@
 	  };
 	
 	  Board.prototype.tilesByColumn = function() {
-	    var column, columnTiles, currTiles, i, j, len, len1, ref, tile, tilegroup;
+	    var column, columnTiles, currTiles, j, k, len, len1, ref, tile, tilegroup;
 	    columnTiles = {};
 	    ref = this.tiles();
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      tile = ref[i];
+	    for (j = 0, len = ref.length; j < len; j++) {
+	      tile = ref[j];
 	      columnTiles[tile.pos[0]] = columnTiles[tile.pos[0]] || [];
 	      columnTiles[tile.pos[0]].push(tile);
 	    }
 	    currTiles = [];
 	    for (column in columnTiles) {
 	      tilegroup = columnTiles[column];
-	      for (j = 0, len1 = tilegroup.length; j < len1; j++) {
-	        tile = tilegroup[j];
+	      for (k = 0, len1 = tilegroup.length; k < len1; k++) {
+	        tile = tilegroup[k];
 	        currTiles.push(tile);
 	      }
 	    }
@@ -291,15 +291,23 @@
 	  };
 	
 	  Board.prototype.replaceTilePos = function() {
-	    var pos, rand, ref, x, y;
-	    rand = Math.floor(Math.random() * 100);
+	    var i, j, k, options, ref, x, y;
 	    ref = this.entryPositions[this.lastMoveDir], x = ref[0], y = ref[1];
+	    options = [];
 	    if (x === "*") {
-	      x = rand % 4;
+	      for (i = j = 0; j <= 3; i = ++j) {
+	        if (this.spotAvailable([i, y])) {
+	          options.push([i, y]);
+	        }
+	      }
 	    } else {
-	      y = rand % 4;
+	      for (i = k = 0; k <= 3; i = ++k) {
+	        if (this.spotAvailable([x, i])) {
+	          options.push([x, i]);
+	        }
+	      }
 	    }
-	    return pos = [x, y];
+	    return options[Math.floor(Math.random() * options.length)];
 	  };
 	
 	  Board.prototype.replaceTile = function() {
@@ -310,10 +318,7 @@
 	    } else {
 	      val = 4;
 	    }
-	    pos = [100, 100];
-	    while (!this.spotAvailable(pos)) {
-	      pos = this.replaceTilePos();
-	    }
+	    pos = this.replaceTilePos();
 	    return this.addTile(pos, val);
 	  };
 	
@@ -325,11 +330,11 @@
 	  };
 	
 	  Board.prototype.setupGrid = function() {
-	    var col, grid, i, j, row;
+	    var col, grid, j, k, row;
 	    grid = [];
-	    for (row = i = 0; i <= 3; row = ++i) {
+	    for (row = j = 0; j <= 3; row = ++j) {
 	      grid.push([]);
-	      for (col = j = 0; j <= 3; col = ++j) {
+	      for (col = k = 0; k <= 3; col = ++k) {
 	        grid[row].push(null);
 	      }
 	    }
