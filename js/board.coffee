@@ -5,6 +5,7 @@ class Board
 		@tilesStore = {}
 		dirs = ["N","E","W","S"]
 		@lastMoveDir = dirs[Math.floor(Math.random() * dirs.length)];
+		@nextTile = @nextTileValue()
 		@replaceTile()
 		@replaceTile()
 	tiles: ->
@@ -92,7 +93,16 @@ class Board
 		@grid[sourceTile.pos[1]][sourceTile.pos[0]] = null
 		receivingTile.value += sourceTile.value
 		delete @tilesStore[sourceTile.id]
+	
+	nextTileValue: ->
+		rand = Math.floor Math.random() * 100
+		if rand < 51
+			val = 3
+		else
+			val = 4
+		@nextTile = val
 		
+
 	replaceTilePos: ->
 		[x, y] = @entryPositions[@lastMoveDir]
 		options = []
@@ -108,13 +118,9 @@ class Board
 		options[Math.floor(Math.random() * options.length)]
 
 	replaceTile: ->
-		rand = Math.floor Math.random() * 100
-		if rand < 51
-			val = 3
-		else
-			val = 4
 		pos = @replaceTilePos()			
-		@addTile(pos, val)
+		@addTile(pos, @nextTile)
+		@nextTile = @nextTileValue()
 
 	addTile: (pos, val) ->
 		newTile = new Tile(pos, val)

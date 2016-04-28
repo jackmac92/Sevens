@@ -155,6 +155,7 @@
 	    this.tilesStore = {};
 	    dirs = ["N", "E", "W", "S"];
 	    this.lastMoveDir = dirs[Math.floor(Math.random() * dirs.length)];
+	    this.nextTile = this.nextTileValue();
 	    this.replaceTile();
 	    this.replaceTile();
 	  }
@@ -290,6 +291,17 @@
 	    return delete this.tilesStore[sourceTile.id];
 	  };
 	
+	  Board.prototype.nextTileValue = function() {
+	    var rand, val;
+	    rand = Math.floor(Math.random() * 100);
+	    if (rand < 51) {
+	      val = 3;
+	    } else {
+	      val = 4;
+	    }
+	    return this.nextTile = val;
+	  };
+	
 	  Board.prototype.replaceTilePos = function() {
 	    var i, j, k, options, ref, x, y;
 	    ref = this.entryPositions[this.lastMoveDir], x = ref[0], y = ref[1];
@@ -311,15 +323,10 @@
 	  };
 	
 	  Board.prototype.replaceTile = function() {
-	    var pos, rand, val;
-	    rand = Math.floor(Math.random() * 100);
-	    if (rand < 51) {
-	      val = 3;
-	    } else {
-	      val = 4;
-	    }
+	    var pos;
 	    pos = this.replaceTilePos();
-	    return this.addTile(pos, val);
+	    this.addTile(pos, this.nextTile);
+	    return this.nextTile = this.nextTileValue();
 	  };
 	
 	  Board.prototype.addTile = function(pos, val) {
@@ -493,6 +500,7 @@
 	    var tileData;
 	    this.clearBoard();
 	    this.updateScore();
+	    this.updateNextTile();
 	    tileData = this.game.dataForRender();
 	    return $("li").each(function(idx, li) {
 	      if (tileData[idx.toString()]) {
@@ -503,7 +511,12 @@
 	  };
 	
 	  GameView.prototype.updateScore = function() {
-	    return $('#score').text(this.game.score());
+	    return $('#score').text("Score: " + this.game.score().toString());
+	  };
+	
+	  GameView.prototype.updateNextTile = function() {
+	    $('#next-tile').removeClass();
+	    return $('#next-tile').addClass("_" + this.game.board.nextTile.toString());
 	  };
 	
 	  GameView.prototype.makeMove = function(dir) {

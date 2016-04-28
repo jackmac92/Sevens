@@ -74,6 +74,12 @@ p {
   font-size: 30px;
 }
 
+#next-tile {
+  height: 50px;
+  width: 50px;
+  margin: 0 auto;
+}
+
 .tile {
   background: #21A576;
 }
