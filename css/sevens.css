@@ -67,6 +67,12 @@ p {
   color: white;
   font-family: 'Catamaran', sans-serif;
 }
+#score {  
+  color: white;
+  font-family: 'Catamaran', sans-serif;
+  text-align: center;
+  font-size: 30px;
+}
 
 .tile {
   background: #21A576;

@@ -51,11 +51,15 @@ class GameView
 
 	renderBoard: ->
 		@clearBoard()
+		@updateScore()
 		tileData = @game.dataForRender()
 		$("li").each (idx, li) ->
 			if tileData[idx.toString()]
 				li.dataset.tileValue = tileData[idx]
 				li.className = "tile _" + tileData[idx]
+
+	updateScore: ->
+		$('#score').text(@game.score())	
 
 	makeMove: (dir) ->
 		if @movable

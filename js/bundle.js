@@ -105,6 +105,23 @@
 	    return true;
 	  };
 	
+	  Game.prototype.valueToScore = function(val) {
+	    return Math.pow(7, (Math.log(val / 7) / Math.LN2) + 1);
+	  };
+	
+	  Game.prototype.score = function() {
+	    var currScore, id, ref, tile;
+	    currScore = 0;
+	    ref = this.tiles();
+	    for (id in ref) {
+	      tile = ref[id];
+	      if (tile.value > 5) {
+	        currScore += this.valueToScore(tile.value);
+	      }
+	    }
+	    return currScore;
+	  };
+	
 	  Game.prototype.dataForRender = function() {
 	    var currTiles, id, ref, tile;
 	    currTiles = {};
@@ -470,6 +487,7 @@
 	  GameView.prototype.renderBoard = function() {
 	    var tileData;
 	    this.clearBoard();
+	    this.updateScore();
 	    tileData = this.game.dataForRender();
 	    return $("li").each(function(idx, li) {
 	      if (tileData[idx.toString()]) {
@@ -477,6 +495,10 @@
 	        return li.className = "tile _" + tileData[idx];
 	      }
 	    });
+	  };
+	
+	  GameView.prototype.updateScore = function() {
+	    return $('#score').text(this.game.score());
 	  };
 	
 	  GameView.prototype.makeMove = function(dir) {
