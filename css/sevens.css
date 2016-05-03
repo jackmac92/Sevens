@@ -106,7 +106,7 @@ p {
   }
 }
 
-@media only screen and (min-width: 500px) and (max-width: 1000px) {
+@media only screen and (min-width: 420px) and (max-width: 1000px) {
 
   li:before {
     content: attr(data-tile-value);
@@ -121,7 +121,7 @@ p {
   }
 }
 
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 420px) {
   li:before {
     content: attr(data-tile-value);
     font-size: 40px; 
