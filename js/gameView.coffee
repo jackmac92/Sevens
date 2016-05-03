@@ -49,6 +49,13 @@ class GameView
 			li.dataset.tileValue = ""
 			li.className = ""
 
+
+	animateMove: ->
+		game = @game
+		$("li.tile").addClass("move-" + game.board.lastMoveDir)
+		setTimeout(@renderBoard.bind(this), 277)
+
+
 	renderBoard: ->
 		@clearBoard()
 		@updateScore()
@@ -73,7 +80,7 @@ class GameView
 			self = this
 			setTimeout (-> self.movable = true), 50
 			@game.makeMove(dir)
-			@renderBoard()
+			@animateMove()
 			if @game.gameFinished()
 				$('#modal1').openModal()
 

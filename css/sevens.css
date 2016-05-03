@@ -31,8 +31,33 @@ li {
   background: #040626;
   font-family: 'Catamaran', sans-serif;
   text-align: center;
+  transform: translateY(0);
+  transform: translateX(0);
 }
 
+li.move-S {
+  z-index: 10;
+  transform: translateY(100%);
+  transition: transform 277ms;
+}
+
+li.move-E {
+  z-index: 10;
+  transform: translateX(100%);
+  transition: transform 277ms;
+}
+
+li.move-W {
+  z-index: 10;
+  transform: translateX(-100%);
+  transition: transform 277ms;
+}
+
+li.move-N {
+  z-index: 10;
+  transform: translateY(-100%);
+  transition: transform 277ms;
+}
 
 ul > li:nth-child(4n + 1) {
   clear: left;

@@ -505,6 +505,13 @@
 	    });
 	  };
 	
+	  GameView.prototype.animateMove = function() {
+	    var game;
+	    game = this.game;
+	    $("li.tile").addClass("move-" + game.board.lastMoveDir);
+	    return setTimeout(this.renderBoard.bind(this), 277);
+	  };
+	
 	  GameView.prototype.renderBoard = function() {
 	    var tileData;
 	    this.clearBoard();
@@ -537,7 +544,7 @@
 	        return self.movable = true;
 	      }), 50);
 	      this.game.makeMove(dir);
-	      this.renderBoard();
+	      this.animateMove();
 	      if (this.game.gameFinished()) {
 	        return $('#modal1').openModal();
 	      }
