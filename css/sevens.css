@@ -89,24 +89,7 @@ p {
 ._4 {
   background: #4E15E2;
 }
-
-@media only screen and (min-width: 1000px) {
-
-  li:before {
-    content: attr(data-tile-value);
-    font-size: 60px; 
-    text-shadow: -1px 0 gray, 0 1px gray, 1px 0 gray, 0 -1px gray;
-    color: white;
-    line-height: 1.77;
-  }
-  ul {
-    min-width: 400px;
-    width: 33%;
-    margin: 0 auto;
-  }
-}
-
-@media only screen and (min-width: 420px) and (max-width: 1000px) {
+@media only screen and (min-width: 427px) and (max-width: 1000px) {
 
   li:before {
     content: attr(data-tile-value);
@@ -121,16 +104,43 @@ p {
   }
 }
 
-@media only screen and (max-width: 420px) {
+@media only screen and (min-width: 1000px) {
+
   li:before {
     content: attr(data-tile-value);
-    font-size: 40px; 
+    font-size: 60px; 
     text-shadow: -1px 0 gray, 0 1px gray, 1px 0 gray, 0 -1px gray;
     color: white;
     line-height: 1.77;
   }
+
   ul {
-    width: 90%;
+    min-width: 400px;
+    width: 33%;
     margin: 0 auto;
   }
+
 }
+@media only screen and (min-width: 10px) and (max-width: 427px) {
+  #game {
+    margin: 10px;
+  }
+  #help-button {
+    left: 80%;
+  }
+
+  li:before {
+    content: attr(data-tile-value);
+    font-size: 25px; 
+    text-shadow: -1px 0 gray, 0 1px gray, 1px 0 gray, 0 -1px gray;
+    color: white;
+    line-height: 1.5;
+  }
+  
+  ul {
+    width: 100%;
+    margin: 0 auto;
+  }
+  
+}
+

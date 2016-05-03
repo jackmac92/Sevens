@@ -44,14 +44,23 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Game, GameView;
+	var Game, GameView, preventScroll;
 	
 	Game = __webpack_require__(1);
 	
 	GameView = __webpack_require__(4);
 	
+	preventScroll = function() {
+	  return window.addEventListener('keydown', function(e) {
+	    if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+	      return e.preventDefault();
+	    }
+	  }, false);
+	};
+	
 	$(function() {
 	  var game, gameRoot;
+	  preventScroll();
 	  gameRoot = $("#sevens");
 	  game = new Game();
 	  new GameView(game, gameRoot);
