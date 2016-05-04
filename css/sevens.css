@@ -9,6 +9,7 @@ html, body, figure, figcaption, ul, li, h1 {
 
 ul {
   list-style: none;
+  border: 5px solid white;
 }
 
 .group:after {
@@ -23,24 +24,25 @@ body {
 }
 
 li {
-  /*float: left;*/
-  /*width: 25%;*/
-  background: #040626;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   text-align: center;
   transform: translateY(0);
   transform: translateX(0);
 }
+
 div.grid-wrap {
+  position: relative;
   border: 5px solid white;
   width: 25%;
   height: 0;
-  padding-bottom: 26%;
+  padding-bottom: 25%;
   float: left;
 }
 
-li {
-  background: transparent;
-}
 
 li.move-S {
   transform: translateY(calc(100% + 5px));
@@ -68,9 +70,6 @@ ul > div.grid-wrap:nth-child(4n+1) {
   clear:left;
 }
 
-/*ul > li:nth-child(4n + 1) {
-  clear: left;
-}*/
 
 h1 {
   margin: 5px;
@@ -119,19 +118,6 @@ li.sentinel {
   width: 50px;
   margin: 20px auto;
 }
-@media only screen and (min-width: 427px) and (max-width: 1000px) {
-
-  li:before {
-    content: attr(data-tile-value);
-    font-size: 50px;
-    text-shadow: -1px 0 gray, 0 1px gray, 1px 0 gray, 0 -1px gray;
-    color: white;
-  }
-  ul {
-    width: 50%;
-    margin: 0 auto;
-  }
-}
 
 @media only screen and (min-width: 1000px) {
 
@@ -150,6 +136,21 @@ li.sentinel {
   }
 
 }
+
+@media only screen and (min-width: 427px) and (max-width: 1000px) {
+
+  li:before {
+    content: attr(data-tile-value);
+    font-size: 50px;
+    text-shadow: -1px 0 gray, 0 1px gray, 1px 0 gray, 0 -1px gray;
+    color: white;
+  }
+  ul {
+    min-width: 400px;
+    width: 50%;
+    margin: 0 auto;
+  }
+}
 @media only screen and (min-width: 10px) and (max-width: 427px) {
   #game {
     margin: 10px;
@@ -160,10 +161,10 @@ li.sentinel {
 
   li:before {
     content: attr(data-tile-value);
-    font-size: 25px; 
+    font-size: 35px; 
     text-shadow: -1px 0 gray, 0 1px gray, 1px 0 gray, 0 -1px gray;
     color: white;
-    line-height: 1.5;
+    line-height: 2.5;
   }
   
   ul {
