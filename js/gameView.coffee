@@ -66,9 +66,7 @@ class GameView
 					li.className += " static"
 			else if allTiles[idx.toString()] 
 				li.className += " static"
-			else
-				li.className += " sentinel"
-				
+							
 
 		setTimeout(@renderBoard.bind(this), 277)
 

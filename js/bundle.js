@@ -529,8 +529,6 @@
 	        }
 	      } else if (allTiles[idx.toString()]) {
 	        return li.className += " static";
-	      } else {
-	        return li.className += " sentinel";
 	      }
 	    });
 	    return setTimeout(this.renderBoard.bind(this), 277);
