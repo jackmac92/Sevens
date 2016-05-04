@@ -21,6 +21,7 @@ class Game
 						if currTile.canMergeWith tile.value
 							return false
 		true
+	
 	valueToScore: (val) ->
 		7**((Math.log(val/7)/ Math.LN2)+1)
 

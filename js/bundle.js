@@ -208,24 +208,28 @@
 	  };
 	
 	  Board.prototype.makeMove = function(dir) {
-	    var currPos, delta, destTile, j, len, movingTiles, newPos, tile;
+	    var currPos, delta, destTile, j, len, movingTiles, newPos, ordered_tiles, tile;
 	    this.lastMoveDir = dir;
 	    delta = this.deltas[dir];
-	    movingTiles = this.deltaTilePattern(dir);
-	    for (j = 0, len = movingTiles.length; j < len; j++) {
-	      tile = movingTiles[j];
+	    ordered_tiles = this.deltaTilePattern(dir);
+	    movingTiles = {};
+	    for (j = 0, len = ordered_tiles.length; j < len; j++) {
+	      tile = ordered_tiles[j];
 	      currPos = tile.pos;
 	      newPos = [currPos[0] + delta[0], currPos[1] + delta[1]];
 	      if (this.spotAvailable(newPos)) {
+	        movingTiles[tile.renderIdx()] = tile;
 	        this.moveTileTo(tile, newPos);
 	      } else if (this.isValidPosition(newPos)) {
 	        destTile = this.tileAt(newPos);
 	        if (tile.canMergeWith(destTile.value)) {
+	          movingTiles[tile.renderIdx()] = tile;
 	          this.mergeTiles(tile, destTile);
 	        }
 	      }
 	    }
-	    return this.replaceTile();
+	    this.replaceTile();
+	    return movingTiles;
 	  };
 	
 	  Board.prototype.spotAvailable = function(pos) {
@@ -427,7 +431,8 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var GameView, Mousetrap;
+	var GameView, Mousetrap,
+	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 	
 	Mousetrap = __webpack_require__(5);
 	
@@ -447,7 +452,7 @@
 	    $ul.addClass("group");
 	    for (row = i = 0; i <= 3; row = ++i) {
 	      for (col = j = 0; j <= 3; col = ++j) {
-	        $li = $("<li>");
+	        $li = $('<div class="grid-wrap"><li></div>');
 	        $li.data("pos", [row, col]);
 	        $ul.append($li);
 	      }
@@ -505,10 +510,29 @@
 	    });
 	  };
 	
-	  GameView.prototype.animateMove = function() {
-	    var game;
+	  GameView.prototype.animateMove = function(movingTiles) {
+	    var allTiles, game, ignoredIndexes;
 	    game = this.game;
-	    $("li.tile").addClass("move-" + game.board.lastMoveDir);
+	    allTiles = this.game.dataForRender();
+	    ignoredIndexes = {
+	      "N": [0, 1, 2, 3],
+	      "E": [3, 7, 11, 15],
+	      "W": [0, 4, 8, 12],
+	      "S": [12, 13, 14, 15]
+	    };
+	    $("li").each(function(idx, li) {
+	      if (movingTiles[idx.toString()]) {
+	        if (indexOf.call(ignoredIndexes[game.board.lastMoveDir], idx) < 0) {
+	          return li.className += " move-" + game.board.lastMoveDir;
+	        } else {
+	          return li.className += " static";
+	        }
+	      } else if (allTiles[idx.toString()]) {
+	        return li.className += " static";
+	      } else {
+	        return li.className += " sentinel";
+	      }
+	    });
 	    return setTimeout(this.renderBoard.bind(this), 277);
 	  };
 	
@@ -542,9 +566,8 @@
 	      self = this;
 	      setTimeout((function() {
 	        return self.movable = true;
-	      }), 50);
-	      this.game.makeMove(dir);
-	      this.animateMove();
+	      }), 277);
+	      this.animateMove(this.game.makeMove(dir));
 	      if (this.game.gameFinished()) {
 	        return $('#modal1').openModal();
 	      }

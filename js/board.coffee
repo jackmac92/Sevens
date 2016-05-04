@@ -35,17 +35,21 @@ class Board
 	makeMove: (dir) ->
 		@lastMoveDir = dir
 		delta = @deltas[dir]
-		movingTiles = @deltaTilePattern dir
-		for tile in movingTiles
+		ordered_tiles = @deltaTilePattern dir
+		movingTiles = {}
+		for tile in ordered_tiles
 			currPos = tile.pos
 			newPos = [currPos[0] + delta[0], currPos[1] + delta[1]]	
 			if @spotAvailable newPos
+				movingTiles[tile.renderIdx()] = tile
 				@moveTileTo(tile, newPos)
 			else if @isValidPosition newPos
 				destTile = @tileAt(newPos)
-				if tile.canMergeWith destTile.value 
+				if tile.canMergeWith destTile.value
+					movingTiles[tile.renderIdx()] = tile
 					@mergeTiles tile, destTile
 		@replaceTile()
+		movingTiles
 
 	spotAvailable: (pos) ->
 		@isValidPosition(pos) && @isEmptyPosition(pos)
