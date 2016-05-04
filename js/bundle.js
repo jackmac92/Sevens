@@ -44,14 +44,23 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Game, GameView;
+	var Game, GameView, preventScroll;
 	
 	Game = __webpack_require__(1);
 	
 	GameView = __webpack_require__(4);
 	
+	preventScroll = function() {
+	  return window.addEventListener('keydown', function(e) {
+	    if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+	      return e.preventDefault();
+	    }
+	  }, false);
+	};
+	
 	$(function() {
 	  var game, gameRoot;
+	  preventScroll();
 	  gameRoot = $("#sevens");
 	  game = new Game();
 	  new GameView(game, gameRoot);
@@ -78,8 +87,6 @@
 	  Game.prototype.makeMove = function(dir) {
 	    if (!this.gameFinished()) {
 	      return this.board.makeMove(dir);
-	    } else {
-	      return $('#modal1').openModal();
 	    }
 	  };
 	
@@ -105,6 +112,23 @@
 	      }
 	    }
 	    return true;
+	  };
+	
+	  Game.prototype.valueToScore = function(val) {
+	    return Math.pow(7, (Math.log(val / 7) / Math.LN2) + 1);
+	  };
+	
+	  Game.prototype.score = function() {
+	    var currScore, id, ref, tile;
+	    currScore = 0;
+	    ref = this.tiles();
+	    for (id in ref) {
+	      tile = ref[id];
+	      if (tile.value > 5) {
+	        currScore += this.valueToScore(tile.value);
+	      }
+	    }
+	    return currScore;
 	  };
 	
 	  Game.prototype.dataForRender = function() {
@@ -135,11 +159,14 @@
 	
 	Board = (function() {
 	  function Board() {
+	    var dirs;
 	    this.grid = this.setupGrid();
 	    this.tilesStore = {};
-	    this.lastMoveDir = null;
-	    this.addTile([3, 2], 3);
-	    this.addTile([2, 2], 4);
+	    dirs = ["N", "E", "W", "S"];
+	    this.lastMoveDir = dirs[Math.floor(Math.random() * dirs.length)];
+	    this.nextTile = this.nextTileValue();
+	    this.replaceTile();
+	    this.replaceTile();
 	  }
 	
 	  Board.prototype.tiles = function() {
@@ -154,11 +181,11 @@
 	  };
 	
 	  Board.prototype.surroundingTiles = function(pos) {
-	    var d, deltas, i, len, newPos, result;
+	    var d, deltas, j, len, newPos, result;
 	    deltas = [[0, 1], [0, -1], [1, 0], [-1, 0]];
 	    result = [];
-	    for (i = 0, len = deltas.length; i < len; i++) {
-	      d = deltas[i];
+	    for (j = 0, len = deltas.length; j < len; j++) {
+	      d = deltas[j];
 	      newPos = [pos[0] + d[0], pos[1] + d[1]];
 	      if (this.isValidPosition(newPos) && this.tileAt(newPos)) {
 	        result.push(this.tileAt(newPos));
@@ -181,24 +208,28 @@
 	  };
 	
 	  Board.prototype.makeMove = function(dir) {
-	    var currPos, delta, destTile, i, len, movingTiles, newPos, tile;
+	    var currPos, delta, destTile, j, len, movingTiles, newPos, ordered_tiles, tile;
 	    this.lastMoveDir = dir;
 	    delta = this.deltas[dir];
-	    movingTiles = this.deltaTilePattern(dir);
-	    for (i = 0, len = movingTiles.length; i < len; i++) {
-	      tile = movingTiles[i];
+	    ordered_tiles = this.deltaTilePattern(dir);
+	    movingTiles = {};
+	    for (j = 0, len = ordered_tiles.length; j < len; j++) {
+	      tile = ordered_tiles[j];
 	      currPos = tile.pos;
 	      newPos = [currPos[0] + delta[0], currPos[1] + delta[1]];
 	      if (this.spotAvailable(newPos)) {
+	        movingTiles[tile.renderIdx()] = tile;
 	        this.moveTileTo(tile, newPos);
 	      } else if (this.isValidPosition(newPos)) {
 	        destTile = this.tileAt(newPos);
 	        if (tile.canMergeWith(destTile.value)) {
+	          movingTiles[tile.renderIdx()] = tile;
 	          this.mergeTiles(tile, destTile);
 	        }
 	      }
 	    }
-	    return this.replaceTile();
+	    this.replaceTile();
+	    return movingTiles;
 	  };
 	
 	  Board.prototype.spotAvailable = function(pos) {
@@ -218,19 +249,19 @@
 	  };
 	
 	  Board.prototype.tilesByRow = function() {
-	    var currTiles, i, j, len, len1, ref, row, rowTiles, tile, tilegroup;
+	    var currTiles, j, k, len, len1, ref, row, rowTiles, tile, tilegroup;
 	    rowTiles = {};
 	    ref = this.tiles();
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      tile = ref[i];
+	    for (j = 0, len = ref.length; j < len; j++) {
+	      tile = ref[j];
 	      rowTiles[tile.pos[1]] = rowTiles[tile.pos[1]] || [];
 	      rowTiles[tile.pos[1]].push(tile);
 	    }
 	    currTiles = [];
 	    for (row in rowTiles) {
 	      tilegroup = rowTiles[row];
-	      for (j = 0, len1 = tilegroup.length; j < len1; j++) {
-	        tile = tilegroup[j];
+	      for (k = 0, len1 = tilegroup.length; k < len1; k++) {
+	        tile = tilegroup[k];
 	        currTiles.push(tile);
 	      }
 	    }
@@ -238,19 +269,19 @@
 	  };
 	
 	  Board.prototype.tilesByColumn = function() {
-	    var column, columnTiles, currTiles, i, j, len, len1, ref, tile, tilegroup;
+	    var column, columnTiles, currTiles, j, k, len, len1, ref, tile, tilegroup;
 	    columnTiles = {};
 	    ref = this.tiles();
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      tile = ref[i];
+	    for (j = 0, len = ref.length; j < len; j++) {
+	      tile = ref[j];
 	      columnTiles[tile.pos[0]] = columnTiles[tile.pos[0]] || [];
 	      columnTiles[tile.pos[0]].push(tile);
 	    }
 	    currTiles = [];
 	    for (column in columnTiles) {
 	      tilegroup = columnTiles[column];
-	      for (j = 0, len1 = tilegroup.length; j < len1; j++) {
-	        tile = tilegroup[j];
+	      for (k = 0, len1 = tilegroup.length; k < len1; k++) {
+	        tile = tilegroup[k];
 	        currTiles.push(tile);
 	      }
 	    }
@@ -273,31 +304,42 @@
 	    return delete this.tilesStore[sourceTile.id];
 	  };
 	
-	  Board.prototype.replaceTilePos = function() {
-	    var pos, rand, ref, x, y;
-	    rand = Math.floor(Math.random() * 100);
-	    ref = this.entryPositions[this.lastMoveDir], x = ref[0], y = ref[1];
-	    if (x === "*") {
-	      x = rand % 4;
-	    } else {
-	      y = rand % 4;
-	    }
-	    return pos = [x, y];
-	  };
-	
-	  Board.prototype.replaceTile = function() {
-	    var pos, rand, val;
+	  Board.prototype.nextTileValue = function() {
+	    var rand, val;
 	    rand = Math.floor(Math.random() * 100);
 	    if (rand < 51) {
 	      val = 3;
 	    } else {
 	      val = 4;
 	    }
-	    pos = [20, 20];
-	    while (!this.spotAvailable(pos)) {
-	      pos = this.replaceTilePos();
+	    return this.nextTile = val;
+	  };
+	
+	  Board.prototype.replaceTilePos = function() {
+	    var i, j, k, options, ref, x, y;
+	    ref = this.entryPositions[this.lastMoveDir], x = ref[0], y = ref[1];
+	    options = [];
+	    if (x === "*") {
+	      for (i = j = 0; j <= 3; i = ++j) {
+	        if (this.spotAvailable([i, y])) {
+	          options.push([i, y]);
+	        }
+	      }
+	    } else {
+	      for (i = k = 0; k <= 3; i = ++k) {
+	        if (this.spotAvailable([x, i])) {
+	          options.push([x, i]);
+	        }
+	      }
 	    }
-	    return this.addTile(pos, val);
+	    return options[Math.floor(Math.random() * options.length)];
+	  };
+	
+	  Board.prototype.replaceTile = function() {
+	    var pos;
+	    pos = this.replaceTilePos();
+	    this.addTile(pos, this.nextTile);
+	    return this.nextTile = this.nextTileValue();
 	  };
 	
 	  Board.prototype.addTile = function(pos, val) {
@@ -308,11 +350,11 @@
 	  };
 	
 	  Board.prototype.setupGrid = function() {
-	    var col, grid, i, j, row;
+	    var col, grid, j, k, row;
 	    grid = [];
-	    for (row = i = 0; i <= 3; row = ++i) {
+	    for (row = j = 0; j <= 3; row = ++j) {
 	      grid.push([]);
-	      for (col = j = 0; j <= 3; col = ++j) {
+	      for (col = k = 0; k <= 3; col = ++k) {
 	        grid[row].push(null);
 	      }
 	    }
@@ -389,7 +431,8 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var GameView, Mousetrap;
+	var GameView, Mousetrap,
+	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 	
 	Mousetrap = __webpack_require__(5);
 	
@@ -409,7 +452,7 @@
 	    $ul.addClass("group");
 	    for (row = i = 0; i <= 3; row = ++i) {
 	      for (col = j = 0; j <= 3; col = ++j) {
-	        $li = $("<li>");
+	        $li = $('<div class="grid-wrap"><li></div>');
 	        $li.data("pos", [row, col]);
 	        $ul.append($li);
 	      }
@@ -467,9 +510,35 @@
 	    });
 	  };
 	
+	  GameView.prototype.animateMove = function(movingTiles) {
+	    var allTiles, game, ignoredIndexes;
+	    game = this.game;
+	    allTiles = this.game.dataForRender();
+	    ignoredIndexes = {
+	      "N": [0, 1, 2, 3],
+	      "E": [3, 7, 11, 15],
+	      "W": [0, 4, 8, 12],
+	      "S": [12, 13, 14, 15]
+	    };
+	    $("li").each(function(idx, li) {
+	      if (movingTiles[idx.toString()]) {
+	        if (indexOf.call(ignoredIndexes[game.board.lastMoveDir], idx) < 0) {
+	          return li.className += " move-" + game.board.lastMoveDir;
+	        } else {
+	          return li.className += " static";
+	        }
+	      } else if (allTiles[idx.toString()]) {
+	        return li.className += " static";
+	      }
+	    });
+	    return setTimeout(this.renderBoard.bind(this), 277);
+	  };
+	
 	  GameView.prototype.renderBoard = function() {
 	    var tileData;
 	    this.clearBoard();
+	    this.updateScore();
+	    this.updateNextTile();
 	    tileData = this.game.dataForRender();
 	    return $("li").each(function(idx, li) {
 	      if (tileData[idx.toString()]) {
@@ -479,6 +548,15 @@
 	    });
 	  };
 	
+	  GameView.prototype.updateScore = function() {
+	    return $('#score').text("Score: " + this.game.score().toString());
+	  };
+	
+	  GameView.prototype.updateNextTile = function() {
+	    $('#next-tile').removeClass();
+	    return $('#next-tile').addClass("_" + this.game.board.nextTile.toString());
+	  };
+	
 	  GameView.prototype.makeMove = function(dir) {
 	    var self;
 	    if (this.movable) {
@@ -486,11 +564,11 @@
 	      self = this;
 	      setTimeout((function() {
 	        return self.movable = true;
-	      }), 50);
-	      this.game.makeMove(dir);
-	      return this.renderBoard();
-	    } else {
-	      return console.log('hang on');
+	      }), 277);
+	      this.animateMove(this.game.makeMove(dir));
+	      if (this.game.gameFinished()) {
+	        return $('#modal1').openModal();
+	      }
 	    }
 	  };
 	

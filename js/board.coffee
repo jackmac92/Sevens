@@ -3,9 +3,11 @@ class Board
 	constructor: ->
 		@grid = @setupGrid()
 		@tilesStore = {}
-		@lastMoveDir = null
-		@addTile([3,2], 3)
-		@addTile([2,2], 4)
+		dirs = ["N","E","W","S"]
+		@lastMoveDir = dirs[Math.floor(Math.random() * dirs.length)];
+		@nextTile = @nextTileValue()
+		@replaceTile()
+		@replaceTile()
 	tiles: ->
 		for id, tile of @tilesStore
 			tile
@@ -33,17 +35,21 @@ class Board
 	makeMove: (dir) ->
 		@lastMoveDir = dir
 		delta = @deltas[dir]
-		movingTiles = @deltaTilePattern dir
-		for tile in movingTiles
+		ordered_tiles = @deltaTilePattern dir
+		movingTiles = {}
+		for tile in ordered_tiles
 			currPos = tile.pos
 			newPos = [currPos[0] + delta[0], currPos[1] + delta[1]]	
 			if @spotAvailable newPos
+				movingTiles[tile.renderIdx()] = tile
 				@moveTileTo(tile, newPos)
 			else if @isValidPosition newPos
 				destTile = @tileAt(newPos)
-				if tile.canMergeWith destTile.value 
+				if tile.canMergeWith destTile.value
+					movingTiles[tile.renderIdx()] = tile
 					@mergeTiles tile, destTile
 		@replaceTile()
+		movingTiles
 
 	spotAvailable: (pos) ->
 		@isValidPosition(pos) && @isEmptyPosition(pos)
@@ -92,27 +98,39 @@ class Board
 		receivingTile.value += sourceTile.value
 		delete @tilesStore[sourceTile.id]
 	
-	replaceTilePos: ->
-		rand = Math.floor Math.random() * 100
-		[x, y] = @entryPositions[@lastMoveDir]
-		if x == "*" then x = rand % 4 else y = rand % 4
-		pos = [x,y]
-
-	replaceTile: ->
+	nextTileValue: ->
 		rand = Math.floor Math.random() * 100
 		if rand < 51
 			val = 3
 		else
 			val = 4
-		pos = [20,20]
-		while !@spotAvailable pos
-			pos = @replaceTilePos()
-		@addTile(pos, val)
+		@nextTile = val
+		
+
+	replaceTilePos: ->
+		[x, y] = @entryPositions[@lastMoveDir]
+		options = []
+		if x == "*"
+			for i in [0..3]
+				if @spotAvailable [i, y]
+					options.push [i,y]
+		else
+			for i in [0..3]
+				if @spotAvailable [x, i]
+					options.push [x,i]
+		
+		options[Math.floor(Math.random() * options.length)]
+
+	replaceTile: ->
+		pos = @replaceTilePos()			
+		@addTile(pos, @nextTile)
+		@nextTile = @nextTileValue()
 
 	addTile: (pos, val) ->
 		newTile = new Tile(pos, val)
 		@grid[pos[1]][pos[0]] = newTile
 		@tilesStore[newTile.id] = newTile
+
 	setupGrid: ->
 		grid = []
 		for row in [0..3]

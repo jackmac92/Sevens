@@ -9,8 +9,6 @@ class Game
 	makeMove: (dir) ->
 		unless @gameFinished()
 			@board.makeMove dir
-		else
-			$('#modal1').openModal()
 
 	gameFinished: ->
 		for row in @board.grid
@@ -23,6 +21,16 @@ class Game
 						if currTile.canMergeWith tile.value
 							return false
 		true
+	
+	valueToScore: (val) ->
+		7**((Math.log(val/7)/ Math.LN2)+1)
+
+	score: ->
+		currScore = 0
+		for id, tile of @tiles()
+			if tile.value > 5
+				currScore += @valueToScore(tile.value)
+		currScore
 
 	dataForRender: ->
 		currTiles = {}
