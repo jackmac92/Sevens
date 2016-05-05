@@ -61,6 +61,8 @@ class GameView
 		$("li").each (idx, li) ->
 			if movingTiles[idx.toString()] && idx not in ignoredIndexes[game.board.lastMoveDir]
 				li.className += " move-" + game.board.lastMoveDir							
+			if mergingTiles[idx.toString()]
+				li.className += " merge"
 
 		setTimeout(@renderBoard.bind(this, mergingTiles), 277)
 

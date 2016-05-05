@@ -30,8 +30,8 @@ li {
   right: 0;
   bottom: 0;
   text-align: center;
+  transform: rotate(0);
   transform: translateY(0);
-  transform: rotateY(0);
   transform: translateX(0);
 }
 
@@ -64,6 +64,12 @@ li.move-W {
 li.move-N {
   transform: translateY(calc(-100% - 5px));
   transition: transform 277ms;
+}
+
+li.merge {
+  transform: rotate(180deg);
+  /*transition: background 300ms ease 200ms;*/
+  transition: transform 500ms ease 200ms;
 }
 
 ul > div.grid-wrap:nth-child(4n+1) {

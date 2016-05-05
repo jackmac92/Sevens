@@ -524,7 +524,10 @@
 	    };
 	    $("li").each(function(idx, li) {
 	      if (movingTiles[idx.toString()] && indexOf.call(ignoredIndexes[game.board.lastMoveDir], idx) < 0) {
-	        return li.className += " move-" + game.board.lastMoveDir;
+	        li.className += " move-" + game.board.lastMoveDir;
+	      }
+	      if (mergingTiles[idx.toString()]) {
+	        return li.className += " merge";
 	      }
 	    });
 	    return setTimeout(this.renderBoard.bind(this, mergingTiles), 277);
