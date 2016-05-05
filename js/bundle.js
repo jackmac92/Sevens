@@ -208,11 +208,12 @@
 	  };
 	
 	  Board.prototype.makeMove = function(dir) {
-	    var currPos, delta, destTile, j, len, movingTiles, newPos, ordered_tiles, tile;
+	    var currPos, delta, destTile, j, len, mergingTiles, movingTiles, newPos, ordered_tiles, tile;
 	    this.lastMoveDir = dir;
 	    delta = this.deltas[dir];
 	    ordered_tiles = this.deltaTilePattern(dir);
 	    movingTiles = {};
+	    mergingTiles = {};
 	    for (j = 0, len = ordered_tiles.length; j < len; j++) {
 	      tile = ordered_tiles[j];
 	      currPos = tile.pos;
@@ -224,12 +225,13 @@
 	        destTile = this.tileAt(newPos);
 	        if (tile.canMergeWith(destTile.value)) {
 	          movingTiles[tile.renderIdx()] = tile;
+	          mergingTiles[destTile.renderIdx()] = tile;
 	          this.mergeTiles(tile, destTile);
 	        }
 	      }
 	    }
 	    this.replaceTile();
-	    return movingTiles;
+	    return [movingTiles, mergingTiles];
 	  };
 	
 	  Board.prototype.spotAvailable = function(pos) {
@@ -442,7 +444,7 @@
 	    this.gameEl = gameRoot;
 	    this.setupBoard();
 	    this.bindMoves();
-	    this.renderBoard();
+	    this.renderBoard({});
 	    this.movable = true;
 	  }
 	
@@ -510,7 +512,7 @@
 	    });
 	  };
 	
-	  GameView.prototype.animateMove = function(movingTiles) {
+	  GameView.prototype.animateMove = function(movingTiles, mergingTiles) {
 	    var allTiles, game, ignoredIndexes;
 	    game = this.game;
 	    allTiles = this.game.dataForRender();
@@ -521,20 +523,14 @@
 	      "S": [12, 13, 14, 15]
 	    };
 	    $("li").each(function(idx, li) {
-	      if (movingTiles[idx.toString()]) {
-	        if (indexOf.call(ignoredIndexes[game.board.lastMoveDir], idx) < 0) {
-	          return li.className += " move-" + game.board.lastMoveDir;
-	        } else {
-	          return li.className += " static";
-	        }
-	      } else if (allTiles[idx.toString()]) {
-	        return li.className += " static";
+	      if (movingTiles[idx.toString()] && indexOf.call(ignoredIndexes[game.board.lastMoveDir], idx) < 0) {
+	        return li.className += " move-" + game.board.lastMoveDir;
 	      }
 	    });
-	    return setTimeout(this.renderBoard.bind(this), 277);
+	    return setTimeout(this.renderBoard.bind(this, mergingTiles), 277);
 	  };
 	
-	  GameView.prototype.renderBoard = function() {
+	  GameView.prototype.renderBoard = function(mergingTiles) {
 	    var tileData;
 	    this.clearBoard();
 	    this.updateScore();
@@ -558,14 +554,18 @@
 	  };
 	
 	  GameView.prototype.makeMove = function(dir) {
-	    var self;
+	    var mergingTiles, movingTiles, self, tileInfo;
 	    if (this.movable) {
 	      this.movable = false;
 	      self = this;
 	      setTimeout((function() {
 	        return self.movable = true;
 	      }), 277);
-	      this.animateMove(this.game.makeMove(dir));
+	      tileInfo = this.game.makeMove(dir);
+	      movingTiles = tileInfo[0];
+	      mergingTiles = tileInfo[1];
+	      console.log(mergingTiles);
+	      this.animateMove(movingTiles, mergingTiles);
 	      if (this.game.gameFinished()) {
 	        return $('#modal1').openModal();
 	      }

@@ -6,7 +6,7 @@ class GameView
 		@gameEl = gameRoot
 		@setupBoard()
 		@bindMoves()
-		@renderBoard()
+		@renderBoard({})
 		@movable = true
 
 	setupBoard: ->
@@ -49,7 +49,7 @@ class GameView
 			li.dataset.tileValue = ""
 			li.className = ""
 
-	animateMove: (movingTiles) ->
+	animateMove: (movingTiles, mergingTiles) ->
 		game = @game
 		allTiles = @game.dataForRender()
 		ignoredIndexes = 
@@ -59,27 +59,23 @@ class GameView
 			"S":[12..15]
 
 		$("li").each (idx, li) ->
-			if movingTiles[idx.toString()]
-				if idx not in ignoredIndexes[game.board.lastMoveDir]
-					li.className += " move-" + game.board.lastMoveDir
-				else
-					li.className += " static"
-			else if allTiles[idx.toString()] 
-				li.className += " static"
-							
+			if movingTiles[idx.toString()] && idx not in ignoredIndexes[game.board.lastMoveDir]
+				li.className += " move-" + game.board.lastMoveDir							
 
-		setTimeout(@renderBoard.bind(this), 277)
+		setTimeout(@renderBoard.bind(this, mergingTiles), 277)
 
 
-	renderBoard: ->
-		@clearBoard()
-		@updateScore()
-		@updateNextTile()
-		tileData = @game.dataForRender()
-		$("li").each (idx, li) ->
-			if tileData[idx.toString()]
-				li.dataset.tileValue = tileData[idx]
-				li.className = "tile _" + tileData[idx]
+	renderBoard: (mergingTiles) ->
+	  @clearBoard()
+	  @updateScore()
+	  @updateNextTile()
+	  tileData = @game.dataForRender()
+	  $("li").each (idx, li) ->
+	    if tileData[idx.toString()]
+	      li.dataset.tileValue = tileData[idx]
+	      li.className = "tile _" + tileData[idx]
+	    	# if mergingTiles[idx.toString()]
+	     		# li.className += " merge"
 
 	updateScore: ->
 		$('#score').text("Score: " + @game.score().toString())
@@ -94,7 +90,11 @@ class GameView
 			@movable = false
 			self = this
 			setTimeout (-> self.movable = true), 277
-			@animateMove(@game.makeMove(dir))
+			tileInfo = @game.makeMove(dir)
+			movingTiles = tileInfo[0]
+			mergingTiles = tileInfo[1]
+			console.log mergingTiles
+			@animateMove(movingTiles, mergingTiles)
 			if @game.gameFinished()
 				$('#modal1').openModal()
 

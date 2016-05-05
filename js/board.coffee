@@ -37,6 +37,7 @@ class Board
 		delta = @deltas[dir]
 		ordered_tiles = @deltaTilePattern dir
 		movingTiles = {}
+		mergingTiles = {}
 		for tile in ordered_tiles
 			currPos = tile.pos
 			newPos = [currPos[0] + delta[0], currPos[1] + delta[1]]	
@@ -47,9 +48,10 @@ class Board
 				destTile = @tileAt(newPos)
 				if tile.canMergeWith destTile.value
 					movingTiles[tile.renderIdx()] = tile
+					mergingTiles[destTile.renderIdx()] = tile
 					@mergeTiles tile, destTile
 		@replaceTile()
-		movingTiles
+		[movingTiles, mergingTiles]
 
 	spotAvailable: (pos) ->
 		@isValidPosition(pos) && @isEmptyPosition(pos)
