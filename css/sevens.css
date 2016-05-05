@@ -139,6 +139,11 @@ li.sentinel {
     margin: 2px;
     width: 100%;
   }
+
+  #sevens {
+    width: 100%;
+    height: 100%;
+  }
   #help-button {
     left: 80%;
   }
@@ -158,6 +163,7 @@ li.sentinel {
   ul {
     width: 100%;
     margin: 0 auto;
+    border: 2px solid lightgray;
   }
   
 }

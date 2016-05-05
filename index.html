@@ -4,9 +4,9 @@
     <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <script type="text/javascript" src="js/jquery.touchSwipe.min.js"></script>
     <script type="application/javascript" src="js/bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
 
     <link href='https://fonts.googleapis.com/css?family=Catamaran' rel='stylesheet' type='text/css'>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="./css/sevens.css">
@@ -25,27 +25,27 @@
         <div class="modal-footer">
           <button class=" modal-action modal-close waves-effect waves-green btn-flat" onclick="location.reload()">Play Again</button>
         </div>
-    </div>
+      </div>
+      <div id="info" class="modal">      
+        <h3>How To Play</h3>
+        <p>
+          This game is controlled by swiping on mobile, or directional keys on a computer (arrows/ WASD)
+        </p>
+        <p>
+          The objective is to keep the board from filling up by merging tiles
+        </p>
+        <p>
+          Threes can only merge with Fours and vice versa
+        </p>
+        <p>
+          Tiles with a value of Seven or greater merge with other tiles of Equal value 
+        </p>
+        <button class=" modal-action modal-close waves-effect waves-orange btn-flat" onclick="$('#info').closeModal()">Close</button>
+      </div>
       <div id="sevens"></div>
       <div id="next-tile"></div>
       <div id="score">Score: 0</div>
     </div>
 
-    <div id="info" class="modal">      
-      <h3>How To Play</h3>
-      <p>
-        This game is controlled by swiping on mobile, or directional keys on a computer (arrows/ WASD)
-      </p>
-      <p>
-        The objective is to keep the board from filling up by merging tiles
-      </p>
-      <p>
-        Threes can only merge with Fours and vice versa
-      </p>
-      <p>
-        Tiles with a value of Seven or greater merge with other tiles of Equal value 
-      </p>
-      <button class=" modal-action modal-close waves-effect waves-orange btn-flat" onclick="$('#info').closeModal()">Close</button>
-    </div>
   </body>
 </html>
