@@ -19,5 +19,5 @@ Sevens is a game based of [Threes], (another clone of which is 2048). The object
   -  Fours can only pair with Threes
   -  Tiles with a value of Seven or greater merge with tiles of the same value.
 
-   [play now]: <https://jackmac92.github.io/Sevens/>
+   [play now]: <jackmac92.github.io/Sevens/>
    [threes]: <http://asherv.com/threes/>
