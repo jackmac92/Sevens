@@ -9,7 +9,7 @@ html, body, figure, figcaption, ul, li, h1 {
 
 ul {
   list-style: none;
-  border: 5px solid white;
+  border: 5px solid lightgray;
 }
 
 .group:after {
@@ -36,7 +36,7 @@ li {
 
 div.grid-wrap {
   position: relative;
-  border: 5px solid white;
+  border: 5px solid lightgray;
   width: 25%;
   height: 0;
   padding-bottom: 25%;
@@ -119,25 +119,7 @@ li.sentinel {
   margin: 20px auto;
 }
 
-@media only screen and (min-width: 1000px) {
-
-  li:before {
-    content: attr(data-tile-value);
-    font-size: 60px; 
-    text-shadow: -1px 0 gray, 0 1px gray, 1px 0 gray, 0 -1px gray;
-    color: white;
-    line-height: 1.77;
-  }
-
-  ul {
-    min-width: 400px;
-    width: 33%;
-    margin: 0 auto;
-  }
-
-}
-
-@media only screen and (min-width: 427px) and (max-width: 1000px) {
+@media only screen and (min-width: 527px) {
 
   li:before {
     content: attr(data-tile-value);
@@ -146,17 +128,23 @@ li.sentinel {
     color: white;
   }
   ul {
+    max-width: 600px;
     min-width: 400px;
     width: 50%;
     margin: 0 auto;
   }
 }
-@media only screen and (min-width: 10px) and (max-width: 427px) {
+@media only screen and (min-width: 10px) and (max-width: 527px) {
   #game {
-    margin: 10px;
+    margin: 2px;
+    width: 100%;
   }
   #help-button {
     left: 80%;
+  }
+
+  div.grid-wrap {
+    border: 2px solid lightgray;
   }
 
   li:before {

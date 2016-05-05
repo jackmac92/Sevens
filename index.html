@@ -16,16 +16,16 @@
   <body>
     <button id="help-button" class="btn-floating btn-large waves-effect waves-light red" onclick="$('#info').openModal()"><i class="material-icons">help</i></button>
     <h1>Sevens</h1>
-    <div id="modal1" class="modal">
-      <div class="modal-content">
-        <h4>You lose!</h4>
-        <p style="color:black">Nana nana boo boo</p>
-      </div>
-      <div class="modal-footer">
-        <button class=" modal-action modal-close waves-effect waves-green btn-flat" onclick="location.reload()">Play Again</button>
-      </div>
+    <div id="game">
+      <div id="modal1" class="modal">
+        <div class="modal-content">
+          <h4>You lose!</h4>
+          <p style="color:black">Nana nana boo boo</p>
+        </div>
+        <div class="modal-footer">
+          <button class=" modal-action modal-close waves-effect waves-green btn-flat" onclick="location.reload()">Play Again</button>
+        </div>
     </div>
-    <div id="game">      
       <div id="sevens"></div>
       <div id="next-tile"></div>
       <div id="score">Score: 0</div>
