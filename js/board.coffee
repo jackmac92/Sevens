@@ -6,8 +6,8 @@ class Board
 		dirs = ["N","E","W","S"]
 		@lastMoveDir = dirs[Math.floor(Math.random() * dirs.length)];
 		@nextTile = @nextTileValue()
-		@replaceTile()
-		@replaceTile()
+		@setInitialTiles()
+		
 	tiles: ->
 		for id, tile of @tilesStore
 			tile
@@ -32,6 +32,15 @@ class Board
 			when "S"
 				@tilesByRow().reverse()
 
+	setInitialTiles: ->
+		rand = -> Math.floor(Math.random() * 3)
+		for i in [0..1] by 1
+			while true
+				pos = [rand(), rand()]
+				break if @spotAvailable pos
+			@addTile(pos, @nextTile)
+
+
 	makeMove: (dir) ->
 		@lastMoveDir = dir
 		delta = @deltas[dir]
@@ -39,6 +48,7 @@ class Board
 		movingTiles = {}
 		mergingTiles = {}
 		for tile in ordered_tiles
+			@tilesStore[tile.id].new = false
 			currPos = tile.pos
 			newPos = [currPos[0] + delta[0], currPos[1] + delta[1]]	
 			if @spotAvailable newPos
@@ -102,7 +112,7 @@ class Board
 	
 	nextTileValue: ->
 		rand = Math.floor Math.random() * 100
-		if rand < 51
+		if rand < 50
 			val = 3
 		else
 			val = 4
@@ -126,11 +136,11 @@ class Board
 	replaceTile: ->
 		pos = @replaceTilePos()			
 		@addTile(pos, @nextTile)
-		@nextTile = @nextTileValue()
 
 	addTile: (pos, val) ->
 		newTile = new Tile(pos, val)
 		@grid[pos[1]][pos[0]] = newTile
+		@nextTile = @nextTileValue()
 		@tilesStore[newTile.id] = newTile
 
 	setupGrid: ->

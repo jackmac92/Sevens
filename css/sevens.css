@@ -29,6 +29,7 @@ li {
   left: 0;
   right: 0;
   bottom: 0;
+  opacity: .1;
   text-align: center;
   transform: rotate(0);
   transform: translateY(0);
@@ -47,29 +48,29 @@ div.grid-wrap {
 
 li.move-S {
   transform: translateY(calc(100% + 5px));
-  transition: transform 277ms;
+  transition: transform 177ms;
 }
 
 li.move-E {
   transform: translateX(calc(100% + 5px));
-  transition: transform 277ms;
+  transition: transform 177ms;
 }
 
 
 li.move-W {
   transform: translateX(calc(-100% - 5px));
-  transition: transform 277ms;
+  transition: transform 177ms;
 }
 
 li.move-N {
   transform: translateY(calc(-100% - 5px));
-  transition: transform 277ms;
+  transition: transform 177ms;
 }
 
 li.merge {
   transform: rotate(180deg);
   /*transition: background 300ms ease 200ms;*/
-  transition: transform 500ms ease 200ms;
+  transition: transform 300ms ease 177ms;
 }
 
 ul > div.grid-wrap:nth-child(4n+1) {
@@ -86,6 +87,15 @@ h1 {
 
 li.sentinel {
   background: transparent;
+}
+
+li.tile.new {
+  opacity: 1;
+  transition: opacity 100ms;
+}
+
+li.tile.old {
+  opacity: 1;
 }
 
 .tile {

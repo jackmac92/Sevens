@@ -7,6 +7,7 @@ class Tile
 		@y = pos[1]
 		@value = value
 		@prev_pos = null
+		@new = true
 
 	moveTo: (pos) ->
 		@pos = pos

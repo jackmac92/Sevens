@@ -165,8 +165,7 @@
 	    dirs = ["N", "E", "W", "S"];
 	    this.lastMoveDir = dirs[Math.floor(Math.random() * dirs.length)];
 	    this.nextTile = this.nextTileValue();
-	    this.replaceTile();
-	    this.replaceTile();
+	    this.setInitialTiles();
 	  }
 	
 	  Board.prototype.tiles = function() {
@@ -207,6 +206,24 @@
 	    }
 	  };
 	
+	  Board.prototype.setInitialTiles = function() {
+	    var i, j, pos, rand, results;
+	    rand = function() {
+	      return Math.floor(Math.random() * 3);
+	    };
+	    results = [];
+	    for (i = j = 0; j <= 1; i = j += 1) {
+	      while (true) {
+	        pos = [rand(), rand()];
+	        if (this.spotAvailable(pos)) {
+	          break;
+	        }
+	      }
+	      results.push(this.addTile(pos, this.nextTile));
+	    }
+	    return results;
+	  };
+	
 	  Board.prototype.makeMove = function(dir) {
 	    var currPos, delta, destTile, j, len, mergingTiles, movingTiles, newPos, ordered_tiles, tile;
 	    this.lastMoveDir = dir;
@@ -216,6 +233,7 @@
 	    mergingTiles = {};
 	    for (j = 0, len = ordered_tiles.length; j < len; j++) {
 	      tile = ordered_tiles[j];
+	      this.tilesStore[tile.id]["new"] = false;
 	      currPos = tile.pos;
 	      newPos = [currPos[0] + delta[0], currPos[1] + delta[1]];
 	      if (this.spotAvailable(newPos)) {
@@ -309,7 +327,7 @@
 	  Board.prototype.nextTileValue = function() {
 	    var rand, val;
 	    rand = Math.floor(Math.random() * 100);
-	    if (rand < 51) {
+	    if (rand < 50) {
 	      val = 3;
 	    } else {
 	      val = 4;
@@ -340,14 +358,14 @@
 	  Board.prototype.replaceTile = function() {
 	    var pos;
 	    pos = this.replaceTilePos();
-	    this.addTile(pos, this.nextTile);
-	    return this.nextTile = this.nextTileValue();
+	    return this.addTile(pos, this.nextTile);
 	  };
 	
 	  Board.prototype.addTile = function(pos, val) {
 	    var newTile;
 	    newTile = new Tile(pos, val);
 	    this.grid[pos[1]][pos[0]] = newTile;
+	    this.nextTile = this.nextTileValue();
 	    return this.tilesStore[newTile.id] = newTile;
 	  };
 	
@@ -402,6 +420,7 @@
 	    this.y = pos[1];
 	    this.value = value;
 	    this.prev_pos = null;
+	    this["new"] = true;
 	  }
 	
 	  Tile.prototype.moveTo = function(pos) {
@@ -513,9 +532,8 @@
 	  };
 	
 	  GameView.prototype.animateMove = function(movingTiles, mergingTiles) {
-	    var allTiles, game, ignoredIndexes;
+	    var game, ignoredIndexes;
 	    game = this.game;
-	    allTiles = this.game.dataForRender();
 	    ignoredIndexes = {
 	      "N": [0, 1, 2, 3],
 	      "E": [3, 7, 11, 15],
@@ -534,15 +552,26 @@
 	  };
 	
 	  GameView.prototype.renderBoard = function(mergingTiles) {
-	    var tileData;
+	    var newTile, newTileIdx, tileData;
 	    this.clearBoard();
 	    this.updateScore();
 	    this.updateNextTile();
+	    newTile = this.game.tiles().filter(function(tile) {
+	      return tile["new"];
+	    });
+	    if (newTile[0]) {
+	      newTileIdx = newTile[0].renderIdx();
+	    }
 	    tileData = this.game.dataForRender();
 	    return $("li").each(function(idx, li) {
 	      if (tileData[idx.toString()]) {
 	        li.dataset.tileValue = tileData[idx];
-	        return li.className = "tile _" + tileData[idx];
+	        li.className = "tile _" + tileData[idx];
+	        if (idx === newTileIdx) {
+	          return li.className += " new";
+	        } else {
+	          return li.className += " old";
+	        }
 	      }
 	    });
 	  };
@@ -567,7 +596,6 @@
 	      tileInfo = this.game.makeMove(dir);
 	      movingTiles = tileInfo[0];
 	      mergingTiles = tileInfo[1];
-	      console.log(mergingTiles);
 	      this.animateMove(movingTiles, mergingTiles);
 	      if (this.game.gameFinished()) {
 	        return $('#modal1').openModal();

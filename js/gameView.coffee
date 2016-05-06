@@ -51,7 +51,6 @@ class GameView
 
 	animateMove: (movingTiles, mergingTiles) ->
 		game = @game
-		allTiles = @game.dataForRender()
 		ignoredIndexes = 
 			"N":[0..3]
 			"E":[3,7,11,15]
@@ -71,13 +70,18 @@ class GameView
 	  @clearBoard()
 	  @updateScore()
 	  @updateNextTile()
+	  newTile = @game.tiles().filter (tile) -> tile.new
+	  newTileIdx = newTile[0].renderIdx() if newTile[0]
+	  
 	  tileData = @game.dataForRender()
 	  $("li").each (idx, li) ->
-	    if tileData[idx.toString()]
-	      li.dataset.tileValue = tileData[idx]
-	      li.className = "tile _" + tileData[idx]
-	    	# if mergingTiles[idx.toString()]
-	     		# li.className += " merge"
+	  	if tileData[idx.toString()]
+	  		li.dataset.tileValue = tileData[idx]
+	  		li.className = "tile _" + tileData[idx]
+	  		if idx == newTileIdx
+	  			li.className += " new"
+	  		else
+	  			li.className += " old"
 
 	updateScore: ->
 		$('#score').text("Score: " + @game.score().toString())
@@ -95,7 +99,6 @@ class GameView
 			tileInfo = @game.makeMove(dir)
 			movingTiles = tileInfo[0]
 			mergingTiles = tileInfo[1]
-			console.log mergingTiles
 			@animateMove(movingTiles, mergingTiles)
 			if @game.gameFinished()
 				$('#modal1').openModal()
