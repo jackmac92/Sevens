@@ -76,12 +76,12 @@ class GameView
 	  tileData = @game.dataForRender()
 	  $("li").each (idx, li) ->
 	  	if tileData[idx.toString()]
-	  		li.dataset.tileValue = tileData[idx]
-	  		li.className = "tile _" + tileData[idx]
 	  		if idx == newTileIdx
 	  			li.className += " new"
 	  		else
 	  			li.className += " old"
+	  		li.dataset.tileValue = tileData[idx]
+	  		li.className += " tile _" + tileData[idx]
 
 	updateScore: ->
 		$('#score').text("Score: " + @game.score().toString())

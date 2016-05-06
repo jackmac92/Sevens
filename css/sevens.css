@@ -46,28 +46,28 @@ div.grid-wrap {
 }
 
 
-li.move-S {
+li.tile.move-S {
   transform: translateY(calc(100% + 5px));
   transition: transform 177ms;
 }
 
-li.move-E {
+li.tile.move-E {
   transform: translateX(calc(100% + 5px));
   transition: transform 177ms;
 }
 
 
-li.move-W {
+li.tile.move-W {
   transform: translateX(calc(-100% - 5px));
   transition: transform 177ms;
 }
 
-li.move-N {
+li.tile.move-N {
   transform: translateY(calc(-100% - 5px));
   transition: transform 177ms;
 }
 
-li.merge {
+li.tile.merge {
   transform: rotate(180deg);
   /*transition: background 300ms ease 200ms;*/
   transition: transform 300ms ease 177ms;
@@ -85,13 +85,10 @@ h1 {
   color: green;
 }
 
-li.sentinel {
-  background: transparent;
-}
 
 li.tile.new {
   opacity: 1;
-  transition: opacity 100ms;
+  /*transition: opacity 300ms;*/
 }
 
 li.tile.old {

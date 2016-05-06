@@ -565,13 +565,13 @@
 	    tileData = this.game.dataForRender();
 	    return $("li").each(function(idx, li) {
 	      if (tileData[idx.toString()]) {
-	        li.dataset.tileValue = tileData[idx];
-	        li.className = "tile _" + tileData[idx];
 	        if (idx === newTileIdx) {
-	          return li.className += " new";
+	          li.className += " new";
 	        } else {
-	          return li.className += " old";
+	          li.className += " old";
 	        }
+	        li.dataset.tileValue = tileData[idx];
+	        return li.className += " tile _" + tileData[idx];
 	      }
 	    });
 	  };
