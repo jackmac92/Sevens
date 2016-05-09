@@ -31,7 +31,8 @@ li {
   bottom: 0;
   opacity: .1;
   text-align: center;
-  transform: rotate(0);
+  transform: rotateX(0);
+  transform: rotateY(0);
   transform: translateY(0);
   transform: translateX(0);
 }
@@ -68,9 +69,10 @@ li.tile.move-N {
 }
 
 li.tile.merge {
-  transform: rotate(180deg);
+  z-index: 50;
+  transform: rotateY(180deg);
   /*transition: background 300ms ease 200ms;*/
-  transition: transform 300ms ease 177ms;
+  transition: transform 200ms ease 75ms;
 }
 
 ul > div.grid-wrap:nth-child(4n+1) {
@@ -88,7 +90,7 @@ h1 {
 
 li.tile.new {
   opacity: 1;
-  /*transition: opacity 300ms;*/
+  /*transition: transform 177ms, opacity 300ms;*/
 }
 
 li.tile.old {
